@@ -1,0 +1,109 @@
+/* src/app/about/about.module.css */
+.container {
+  padding: 20px;
+  font-family: sans-serif;
+  max-width: 960px; /* Limit width for better readability on larger screens */
+  margin: 0 auto; /* Center the content */
+}
+
+/* Add more specific styles for the about page here */
+
+/* src/app/about/about.module.css */
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto; /* Center and add space */
+  padding: 1rem;
+  line-height: 1.7;
+}
+
+.aboutPage h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary); /* Use theme variable */
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+}
+
+.mainImageContainer {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* Example aspect ratio */
+  position: relative;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  border-radius: 8px; /* Optional rounded corners */
+  background-color: var(--background-secondary); /* Placeholder color */
+}
+
+.introduction {
+  font-size: 1.1rem;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+  color: var(--text-secondary); /* Use theme variable */
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color); /* Use theme variable */
+}
+
+.section:last-of-type {
+  border-bottom: none; /* Remove border from last section */
+  margin-bottom: 1rem;
+}
+
+
+.section h2 {
+  margin-bottom: 1rem;
+  color: var(--text-primary); /* Use theme variable */
+  font-size: 1.5rem;
+}
+
+.section p {
+  color: var(--text-secondary); /* Use theme variable */
+  margin-bottom: 0; /* Remove default paragraph margin if needed */
+}
+
+.callToAction {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    color: var(--accent-color); /* Use theme variable */
+}
+
+/* --- Reuse Loading/Error Styles or define specific ones --- */
+.loadingContainer, .errorContainer, .notFound {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner { /* Make sure spinner styles exist */
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  width: 36px; height: 36px; border-radius: 50%;
+  border-left-color: var(--accent-color);
+  animation: spin 1s ease infinite; margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+  color: var(--error-text);
+  background-color: var(--error-background);
+  border: 1px solid var(--error-border);
+  border-radius: 4px;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.notFound {
+    color: var(--text-secondary);
+}

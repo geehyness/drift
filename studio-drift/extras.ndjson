@@ -1,0 +1,33 @@
+{"_id": "extra.ed144a011f", "_type": "extra", "name": "2 Types of Meats", "price": 10.0, "isAvailable": true}
+{"_id": "extra.11e6af649f", "_type": "extra", "name": "4 Type Meat", "price": 199.0, "isAvailable": true}
+{"_id": "extra.998c99fb78", "_type": "extra", "name": "Double", "price": 70.0, "isAvailable": true}
+{"_id": "extra.657e549245", "_type": "extra", "name": "Meal", "price": 90.0, "isAvailable": true}
+{"_id": "extra.02dc2283d2", "_type": "extra", "name": "Meal", "price": 0.0, "isAvailable": true}
+{"_id": "extra.8c5facf163", "_type": "extra", "name": "Meal", "price": 85.0, "isAvailable": true}
+{"_id": "extra.3fa6f79bab", "_type": "extra", "name": "Large", "price": 60.0, "isAvailable": true}
+{"_id": "extra.f583c3470a", "_type": "extra", "name": "Small", "price": 30.0, "isAvailable": true}
+{"_id": "extra.fe6d2c5396", "_type": "extra", "name": "Large", "price": 50.0, "isAvailable": true}
+{"_id": "extra.5367206048", "_type": "extra", "name": "Small", "price": 60.0, "isAvailable": true}
+{"_id": "extra.05fecde312", "_type": "extra", "name": "Large", "price": 80.0, "isAvailable": true}
+{"_id": "extra.22107f28ec", "_type": "extra", "name": "6 Wings", "price": 60.0, "isAvailable": true}
+{"_id": "extra.9fed1d1d11", "_type": "extra", "name": "12 Wings", "price": 10.0, "isAvailable": true}
+{"_id": "extra.75262c68ee", "_type": "extra", "name": "24 Wings", "price": 175.0, "isAvailable": true}
+{"_id": "extra.4a0674da60", "_type": "extra", "name": "48 Wings", "price": 300.0, "isAvailable": true}
+{"_id": "extra.9cffd9afbf", "_type": "extra", "name": "M", "price": 30.0, "isAvailable": true}
+{"_id": "extra.5b556d2b42", "_type": "extra", "name": "L", "price": 50.0, "isAvailable": true}
+{"_id": "extra.28b412c48c", "_type": "extra", "name": "S", "price": 30.0, "isAvailable": true}
+{"_id": "extra.250c173b12", "_type": "extra", "name": "M", "price": 45.0, "isAvailable": true}
+{"_id": "extra.b0b1c155b6", "_type": "extra", "name": "L", "price": 65.0, "isAvailable": true}
+{"_id": "extra.11a7fcfae6", "_type": "extra", "name": "S", "price": 25.0, "isAvailable": true}
+{"_id": "extra.d6c469f641", "_type": "extra", "name": "M", "price": 40.0, "isAvailable": true}
+{"_id": "extra.5a7b282fdb", "_type": "extra", "name": "L", "price": 60.0, "isAvailable": true}
+{"_id": "extra.3e41d3c431", "_type": "extra", "name": "M", "price": 0.0, "isAvailable": true}
+{"_id": "extra.011e6aad51", "_type": "extra", "name": "440ml", "price": 35.0, "isAvailable": true}
+{"_id": "extra.4bd50151f9", "_type": "extra", "name": "340ml", "price": 35.0, "isAvailable": true}
+{"_id": "extra.fede8c5367", "_type": "extra", "name": "440ml", "price": 40.0, "isAvailable": true}
+{"_id": "extra.8ce48e852a", "_type": "extra", "name": "330ml", "price": 35.0, "isAvailable": true}
+{"_id": "extra.54404f68ae", "_type": "extra", "name": "440ml", "price": 45.0, "isAvailable": true}
+{"_id": "extra.7beea30a90", "_type": "extra", "name": "330ml", "price": 400.0, "isAvailable": true}
+{"_id": "extra.6fdca4a9de", "_type": "extra", "name": "440ml", "price": 50.0, "isAvailable": true}
+{"_id": "extra.349e3573b2", "_type": "extra", "name": "1 Litre", "price": 30.0, "isAvailable": true}
+{"_id": "extra.e95a8590c0", "_type": "extra", "name": "200ml", "price": 35.0, "isAvailable": true}

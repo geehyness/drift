@@ -1,0 +1,113 @@
+/* components/Layout.module.css */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: 80px; /* Header height */
+  padding-bottom: 2rem;
+}
+
+/* Floating Cart Button */
+.floatingCartButton {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 90;
+  transition: all 0.3s ease;
+}
+
+.floatingCartButton:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.cartIcon {
+  font-size: 1.5rem;
+}
+
+.cartBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: white;
+  color: var(--primary);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.hasItems .cartBadge {
+  display: flex;
+}
+
+/* Cart Overlay */
+.overlayBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlayBackdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cartOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  z-index: 1001;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.cartOverlay.open {
+  transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+  .floatingCartButton {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .cartOverlay {
+    max-width: 100%;
+  }
+}

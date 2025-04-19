@@ -1,0 +1,38 @@
+# Node modules
+**/node_modules/
+
+# Next.js build output
+**/.next/
+**/out/
+
+# Environment variables
+**/.env*
+!.env.example
+
+# Logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# MacOS
+.DS_Store
+
+# Sanity
+**/.sanity/
+
+# Archives
+*.tar.gz
+*.zip
+*.7z
+
+# Misc
+**/.eslintcache
+**/.turbo/
+**/dist/
+**/build/
+# Add these to your .gitignore
+echo "node_modules/" >> .gitignore
+echo ".next/" >> .gitignore
+echo ".env*.local" >> .gitignore
+
+

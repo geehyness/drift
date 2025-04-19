@@ -1,0 +1,23 @@
+{"_type": "category", "_id": "all-day-breakfast", "name": "ALL DAY BREAKFAST"}
+{"_type": "category", "_id": "burgers", "name": "BURGERS"}
+{"_type": "category", "_id": "home-cooked-meals", "name": "HOME COORED MEALS"}
+{"_type": "category", "_id": "sandwiches", "name": "SANDWICHES"}
+{"_type": "category", "_id": "light-snacks", "name": "LIGHT SNACKS"}
+{"_type": "category", "_id": "wingz", "name": "WINGZ"}
+{"_type": "category", "_id": "fries", "name": "FRIES"}
+{"_type": "category", "_id": "beers-lagers", "name": "BEERS / LAGERS"}
+{"_type": "category", "_id": "wines-by-glass", "name": "WINES BY GLASS"}
+{"_type": "category", "_id": "non-alcoholic-drinks", "name": "NON-ALCOHOLIC DRINKS"}
+{"_type": "category", "_id": "tonics", "name": "TONICS"}
+{"_type": "category", "_id": "cordials", "name": "CORDIALS"}
+{"_type": "category", "_id": "wine-by-bottle", "name": "WINE BY BOTTLE"}
+{"_type": "category", "_id": "cocktails", "name": "COCKTAILS"}
+{"_type": "category", "_id": "gin", "name": "GIN"}
+{"_type": "category", "_id": "spirit-by-bottle", "name": "SPIRIT BY BOTTLE"}
+{"_type": "category", "_id": "beer-on-tap", "name": "BEER ON TAP"}
+{"_type": "category", "_id": "cognac", "name": "COGNAC"}
+{"_type": "category", "_id": "whiskey", "name": "WHISREY"}
+{"_type": "category", "_id": "brandy", "name": "BRANDY"}
+{"_type": "category", "_id": "rum", "name": "RUM"}
+{"_type": "category", "_id": "vodka", "name": "VODRA"}
+{"_type": "category", "_id": "gin-combos", "name": "GIN COMBOS"}

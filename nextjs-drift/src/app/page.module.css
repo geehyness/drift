@@ -1,0 +1,307 @@
+/* src/app/page.module.css */
+/* In your page.module.css */
+
+.hero {
+  width: 100%;
+  min-height: 75vh;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* Keep position relative */
+  color: white;
+
+  /* --- MODIFIED background property --- */
+  background:
+    /* Dark overlay layer (adjust alpha 0.5 = 50% darkness) */
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    /* Your background image layer */
+    url('/images/menu-bg.jpg') center center / cover no-repeat;
+}
+
+/* Ensure content is still positioned correctly (needs z-index if you used an overlay div before, otherwise not strictly needed here) */
+.heroContent { /* Assuming this class exists for your inner content div */
+  position: relative; /* Keeps it in the normal flow above the background */
+  z-index: 2; /* Technically not needed if overlay is part of background */
+  text-align: center;
+  padding: 1rem;
+  max-width: 800px;
+}
+
+/* Optional overlay DIV styles (Add <div className={styles.overlay}></div> inside .hero in JSX if needed) */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust darkness as needed */
+  z-index: 1; /* Place overlay below content */
+}
+
+/* Styles for the content container inside the hero */
+.heroContent {
+  position: relative;   /* Ensure content is above overlay if used */
+  z-index: 2;
+  text-align: center;   /* Center text within the container */
+  padding: 1rem;        /* Add some padding inside the content area */
+  max-width: 800px;     /* Optional: Limit content width */
+}
+
+.hero h1 {
+  color: white; /* Explicitly set or inherit from .hero */
+  font-size: clamp(2.2rem, 5vw, 3.2rem); /* Slightly larger base */
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7); /* Stronger shadow */
+}
+
+.hero p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem); /* Slightly larger max */
+  max-width: 700px; /* Adjust width if needed */
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem; /* Space before button */
+  line-height: 1.6; /* Improve readability */
+}
+
+/* Styles for the CTA button */
+.ctaButton {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.8rem;
+  /* Use CSS variables if defined in globals.css, otherwise fallbacks */
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 500; /* Medium weight */
+}
+
+.ctaButton:hover {
+  background-color: var(--primary-hover-color, #0056b3);
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+
+/* ============================ */
+/* Loading / Error / No Items   */
+/* ============================ */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh; /* Ensure it takes up significant space */
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary-color, #007bff); /* Use primary color */
+  animation: spin 1s ease infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  min-height: 50vh; /* Ensure it takes up significant space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #721c24; /* Darker red text */
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c6cb; /* Red border */
+  border-radius: 0.25rem;
+  text-align: center;
+  margin: 2rem auto; /* Center horizontally */
+  max-width: 800px; /* Limit width */
+}
+
+.noItems {
+  text-align: center;
+  padding: 3rem 1rem; /* More padding */
+  color: #6c757d; /* Gray color */
+  font-style: italic;
+}
+
+
+/* ============================ */
+/* Carousel Section Styles      */
+/* ============================ */
+.carouselWrapper {
+  margin-top: 2rem; /* Space above the carousel */
+  /* Add negative margins carefully if container padding interferes with arrows */
+   margin-left: -10px;
+   margin-right: -10px;
+   padding-bottom: 2rem; /* Add space below for dots */
+}
+
+/* Style individual slide items */
+.slideItem {
+   padding: 0 10px; /* Horizontal padding between slides */
+   box-sizing: border-box; /* Include padding in element's total width */
+   min-height: 1px; /* Fix potential rendering issue */
+}
+
+/* Ensure MealCard or content within slide takes full height */
+.slideItem > div { /* Target the direct child wrapper if MealCard is inside */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Optional: Style arrows and dots */
+.carouselWrapper .slick-prev,
+.carouselWrapper .slick-next {
+  z-index: 10; /* Ensure arrows are above slides */
+  width: 30px; /* Adjust size */
+  height: 30px;
+  /* background-color: rgba(0, 0, 0, 0.3); Example background */
+  /* border-radius: 50%; */
+}
+.carouselWrapper .slick-prev:before,
+.carouselWrapper .slick-next:before {
+  /* color: white; Example color */
+  font-size: 20px; /* Adjust icon size */
+}
+
+.carouselWrapper .slick-prev {
+  left: 5px; /* Adjust position */
+}
+.carouselWrapper .slick-next {
+  right: 5px; /* Adjust position */
+}
+
+.carouselWrapper .slick-dots {
+  bottom: 0px; /* Position dots below slides */
+}
+
+.carouselWrapper .slick-dots li button:before {
+  font-size: 10px; /* Adjust dot size */
+  color: #ccc; /* Default dot color */
+  opacity: 0.75;
+}
+
+.carouselWrapper .slick-dots li.slick-active button:before {
+  color: var(--primary-color, #007bff); /* Active dot color */
+  opacity: 1;
+}
+
+
+/* ================================= */
+/* Meals Grid (If used elsewhere)    */
+/* ================================= */
+.mealsSection {
+  padding: 2rem 0; /* Consistent padding */
+}
+
+.mealsGrid {
+  display: grid;
+  /* Responsive grid columns */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Slightly smaller min */
+  gap: 1.5rem; /* Adjust gap */
+  margin-top: 2rem;
+}
+
+/* ============================ */
+/* General Section Header Styles*/
+/* ============================ */
+.section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem; /* Space below header */
+  border-bottom: 1px solid #eee; /* Optional separator */
+  padding-bottom: 1rem; /* Space above separator */
+}
+
+.sectionHeader h2 {
+  margin: 0; /* Remove default margin */
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.viewAll {
+  color: var(--primary-color, #007bff);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.viewAll:hover {
+  color: var(--primary-hover-color, #0056b3);
+  text-decoration: underline;
+}
+
+/* ============================ */
+/* Category Section Styles      */
+/* ============================ */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.categoryCard {
+  display: block;
+  padding: 1.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit; /* Use default text color */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.categoryCard h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.categoryCard p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+
+/* ============================ */
+/* Final CTA Section Styles     */
+/* ============================ */
+.ctaSection {
+  background-color: #121212; /* Light background */
+  padding: 3rem 1rem;
+  text-align: center;
+  margin-top: 3rem; /* Space above this section */
+}
+
+.ctaSection h2 {
+   margin-bottom: 1.5rem;
+}
+
+/* You can reuse .ctaButton styles */
