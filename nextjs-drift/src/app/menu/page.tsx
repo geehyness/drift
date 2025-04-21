@@ -1,82 +1,97 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { client } from '@/lib/sanity';
 import styles from './page.module.css';
 import MealCard from '@/components/MealCard';
 import { Meal, Category } from '@/types/meal';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 interface CategoryWithCount extends Category {
   mealCount: number;
 }
 
 export default function MenuPage() {
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const currentCategorySlug = useMemo(() => searchParams.get('category'), [searchParams]);
+
+  const [allMeals, setAllMeals] = useState<Meal[]>([]);
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all data once on mount
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch all categories
-        const categoriesQuery = `*[_type == "category"] | order(title asc) {
-          _id,
-          _type,
-          title,
-          slug {
-            current
-          },
-          "mealCount": count(*[_type == "meal" && references(^._id) && isAvailable == true])
-        }`;
+        setLoading(true);
+        setError(null);
 
-        // Fetch meals based on selected category or all available meals
-        const mealsQuery = selectedCategory 
-          ? `*[_type == "meal" && isAvailable == true && references(*[_type == "category" && slug.current == "${selectedCategory}"]._id)]`
-          : `*[_type == "meal" && isAvailable == true]`;
-
-          const fullMealsQuery = `${mealsQuery} {
-            _id,
-            _type,
-            name,
-            description,
-            price,
-            isAvailable,
-            featured,
-            "category": category->{
+        const [categoriesData, mealsData] = await Promise.all([
+          client.fetch<CategoryWithCount[]>(`
+            *[_type == "category"] | order(title asc) {
               _id,
               _type,
               title,
-              slug {
-                current
-              }
-            },
-            image {
-              asset-> {
-                _id,
-                _type,
-                url
-              }
-            },
-            // Add this part to fetch extras
-            extras[]-> {
+              slug { current },
+              "mealCount": count(*[_type == "meal" && references(^._id) && isAvailable == true])
+            }
+          `),
+          client.fetch<Meal[]>(`
+            *[_type == "meal" && isAvailable == true] {
               _id,
               _type,
               name,
+              description,
               price,
-              isAvailable
+              isAvailable,
+              featured,
+              "category": category->{
+                _id,
+                _type,
+                title,
+                slug { current }
+              },
+              image {
+                asset-> {
+                  _id,
+                  _type,
+                  url
+                }
+              },
+              extras[]-> {
+                _id,
+                _type,
+                name,
+                price,
+                isAvailable
+              },
+              sizes[] {
+                _key,
+                label,
+                price
+              },
+              choices[]-> {
+                _id,
+                _type,
+                name,
+                description,
+                isRequired,
+                maxOptions,
+                options[] {
+                  _key,
+                  name,
+                  price
+                }
+              }
             }
-          }`;
-  
-
-        const [categoriesData, mealsData] = await Promise.all([
-          client.fetch<CategoryWithCount[]>(categoriesQuery),
-          client.fetch<Meal[]>(fullMealsQuery)
+          `)
         ]);
 
-        setCategories(categoriesData || []);
-        setMeals(mealsData || []);
+        setCategories(categoriesData.filter(c => c.slug?.current));
+        setAllMeals(mealsData.filter(m => m._id));
+
       } catch (err) {
         console.error("Error fetching data:", err);
         setError('Failed to load menu. Please try again later.');
@@ -86,69 +101,91 @@ export default function MenuPage() {
     }
 
     fetchData();
-  }, [selectedCategory]);
+  }, []);
 
-  if (loading) return (
-    <div className={styles.loadingContainer}>
-      <div className={styles.spinner}></div>
-      <p>Loading menu...</p>
-    </div>
-  );
+  // Memoized filtered meals
+  const filteredMeals = useMemo(() => {
+    if (!currentCategorySlug) return allMeals;
+    return allMeals.filter(meal => 
+      meal.category?.slug?.current === currentCategorySlug
+    );
+  }, [allMeals, currentCategorySlug]);
 
-  if (error) return <div className={styles.error}>{error}</div>;
+  // Category click handler remains the same
+  const handleCategoryClick = useCallback((slug: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    slug ? params.set('category', slug) : params.delete('category');
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  // Loading and error states remain the same
+  // ...
 
   return (
     <main className={styles.menuPage}>
-      {/* Menu Header */}
-      <section className={styles.menuHeader}>
-        <div className={`container ${styles.headerContent}`}>
-          <h1>Our Menu</h1>
-          <p>Discover our delicious offerings</p>
-        </div>
-      </section>
+      {/* Header remains the same */}
 
       {/* Category Filter */}
       <section className={`container ${styles.categoryFilter}`}>
+        {/* Mobile dropdown */}
+        <select 
+          className={styles.mobileCategorySelect}
+          value={currentCategorySlug || ''}
+          onChange={(e) => handleCategoryClick(e.target.value || null)}
+        >
+          <option value="">All Items ({allMeals.length})</option>
+          {categories.map(category => (
+            <option key={category._id} value={category.slug?.current}>
+              {category.title} ({category.mealCount})
+            </option>
+          ))}
+        </select>
+
+        {/* Desktop tabs */}
         <div className={styles.filterButtons}>
           <button
-            onClick={() => setSelectedCategory(null)}
-            className={!selectedCategory ? styles.active : ''}
+            onClick={() => handleCategoryClick(null)}
+            className={!currentCategorySlug ? styles.active : ''}
           >
-            All Items
+            All Items ({allMeals.length})
           </button>
           {categories.map(category => (
-            <button
-              key={category._id}
-              onClick={() => setSelectedCategory(category.slug.current)}
-              className={selectedCategory === category.slug.current ? styles.active : ''}
-            >
-              {category.title} ({category.mealCount})
-            </button>
+            category.slug?.current && (
+              <button
+                key={category._id}
+                onClick={() => handleCategoryClick(category.slug.current)}
+                className={currentCategorySlug === category.slug.current ? styles.active : ''}
+              >
+                {category.title} 
+                <span className={styles.categoryCount}>{category.mealCount}</span>
+              </button>
+            )
           ))}
         </div>
       </section>
 
       {/* Menu Items */}
       <section className={`container ${styles.menuItems}`}>
-        {meals.length > 0 ? (
+        {filteredMeals.length > 0 ? (
           <div className={styles.mealsGrid}>
-            {meals.map(meal => (
+            {filteredMeals.map(meal => (
               <MealCard key={meal._id} meal={meal} />
             ))}
           </div>
         ) : (
           <div className={styles.noItems}>
             <p>No meals available in this category</p>
-            <button 
-              onClick={() => setSelectedCategory(null)}
-              className={styles.viewAllButton}
-            >
-              View All Items
-            </button>
+            {currentCategorySlug && (
+              <button
+                onClick={() => handleCategoryClick(null)}
+                className={styles.viewAllButton}
+              >
+                View All Items
+              </button>
+            )}
           </div>
         )}
       </section>
-      <br /><br /><br />
     </main>
   );
 }

@@ -305,3 +305,102 @@
 }
 
 /* You can reuse .ctaButton styles */
+
+
+/* Category Grid */
+.categoryGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin-top: 2rem;
+}
+
+.categoryCard {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 150px;
+  background: #2a2a2a;
+  transition: transform 0.3s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-5px);
+}
+
+.categoryContent {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem;
+  color: white;
+}
+
+.mealCount {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.categoryHover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(76,175,80,0.3), rgba(33,150,243,0.3));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.categoryCard:hover .categoryHover {
+  opacity: 1;
+}
+
+/* Featured Meals Grid */
+.mealsGrid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mealsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading States */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  color: #ff4444;
+  text-align: center;
+  padding: 2rem;
+}

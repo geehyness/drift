@@ -27,7 +27,7 @@
 .logoMain {
   color: white;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .logoSub {
@@ -244,26 +244,15 @@
 
 .logoCard {
   width: 120px;
-  height: 120px;
-  background-color: #00000000; /* Assuming you have this variable */
-  border-radius: 8px; /* Optional: for rounded corners */
+  height: 50px;
   display:flex;
   align-items: center;
   justify-content: center;
-  /* Create the overhang effect */
-  margin-bottom: -50px; /* Adjust this value to control the overhang amount */
-  padding-bottom: 0px; /* Compensate for the negative margin */
   
 }
 
-.logoCard .logoImage{
-  background-color: #f8f9fa;
-  border-radius: 20px;
-  box-shadow: 2 4px 8px rgba(0, 0, 0, 1);
-}
-
 .logoImage {
-  object-fit: cover; /* Or 'cover' depending on your logo's aspect ratio */
+  object-fit:contain; /* Or 'cover' depending on your logo's aspect ratio */
 }
 
 .logoMain {

@@ -1,3 +1,4 @@
+// app/(site)/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,7 +21,6 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch available meals (limit to 6 for homepage)
         const featuredMealsQuery = `*[_type == "meal" && isAvailable == true][0...6] {
           _id,
           _type,
@@ -33,9 +33,7 @@ export default function HomePage() {
             _id,
             _type,
             title,
-            slug {
-              current
-            }
+            slug { current }
           },
           image {
             asset-> {
@@ -44,25 +42,38 @@ export default function HomePage() {
               url
             }
           },
-          // Add this part to fetch extras
           extras[]-> {
             _id,
             _type,
             name,
             price,
             isAvailable
+          },
+          sizes[] {
+            _key,
+            label,
+            price
+          },
+          choices[]-> {
+            _id,
+            _type,
+            name,
+            description,
+            isRequired,
+            maxOptions,
+            options[] {
+              _key,
+              name,
+              price
+            }
           }
         }`;
 
-
-        // Fetch popular categories with meal counts
         const categoriesQuery = `*[_type == "category" && popular == true] | order(title asc) {
           _id,
           _type,
           title,
-          slug {
-            current
-          },
+          slug { current },
           "mealCount": count(*[_type == "meal" && references(^._id) && isAvailable == true])
         }`;
 
@@ -71,8 +82,16 @@ export default function HomePage() {
           client.fetch<CategoryWithCount[]>(categoriesQuery)
         ]);
 
-        setFeaturedMeals(mealsData || []);
-        setCategories(categoriesData || []);
+        const validMeals = (mealsData || []).filter(meal => 
+          meal && meal._id && typeof meal.name === 'string'
+        );
+        const validCategories = (categoriesData || []).filter(category => 
+          category && category._id && category.slug?.current
+        );
+
+        setFeaturedMeals(validMeals);
+        setCategories(validCategories);
+
       } catch (err) {
         console.error("Error fetching data:", err);
         setError('Failed to load content. Please try again later.');
@@ -96,25 +115,17 @@ export default function HomePage() {
   return (
     <main className={styles.homePage}>
       {/* Hero Section */}
-<section
-  className={styles.hero}
-  // Add background image style if desired, like before
-  // style={{ backgroundImage: `url(${heroImageUrl})` }}
->
-  {/* Optional overlay for background image readability */}
-  {/* <div className={styles.overlay}></div> */}
+      <section className={styles.hero}>
+        <div className={`container ${styles.heroContent}`}>
+          <h1>Welcome to Drift</h1>
+          <p>Delicious meals made with love</p>
+          <Link href="/menu" className={styles.ctaButton}>
+            View Full Menu
+          </Link>
+        </div>
+      </section>
 
-  {/* Container centers the content within the full-width/height hero */}
-  <div className={`container ${styles.heroContent}`}>
-    <h1>Welcome to Drift</h1>
-    <p>Delicious meals made with love</p>
-    <Link href="/menu" className={styles.ctaButton}>
-      View Full Menu
-    </Link>
-  </div>
-</section>
-
-      {/* Featured Categories 
+      {/* Popular Categories */}
       <section className={`container ${styles.section}`}>
         <h2>Popular Categories</h2>
         <div className={styles.categoryGrid}>
@@ -124,12 +135,15 @@ export default function HomePage() {
               href={`/menu?category=${category.slug.current}`}
               className={styles.categoryCard}
             >
-              <h3>{category.title}</h3>
-              <p>{category.mealCount} items</p>
+              <div className={styles.categoryContent}>
+                <h3>{category.title}</h3>
+                <p className={styles.mealCount}>{category.mealCount} items</p>
+              </div>
+              <div className={styles.categoryHover}></div>
             </Link>
           ))}
         </div>
-      </section>*/}
+      </section>
 
       {/* Featured Meals */}
       <section className={`container ${styles.section}`}>
@@ -142,7 +156,9 @@ export default function HomePage() {
         <div className={styles.mealsGrid}>
           {featuredMeals.length > 0 ? (
             featuredMeals.map(meal => (
-              <MealCard key={meal._id} meal={meal} />
+              meal && meal._id ? (
+                <MealCard key={meal._id} meal={meal} />
+              ) : null
             ))
           ) : (
             <p className={styles.noItems}>No featured meals available</p>
@@ -157,7 +173,6 @@ export default function HomePage() {
           Browse Full Menu
         </Link>
       </section>
-      <br /><br /><br />
     </main>
   );
 }

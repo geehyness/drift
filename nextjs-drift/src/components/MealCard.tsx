@@ -4,109 +4,156 @@ import Image from 'next/image';
 import { useShoppingCart } from '@/context/ShoppingCartContext';
 import { urlFor } from '@/lib/sanity';
 import styles from './MealCard.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Meal } from '@/types/meal';
 
+const generateCartItemId = (mealId: string, sizeKey?: string) => {
+  return sizeKey ? `${mealId}_size-${sizeKey}` : mealId;
+};
+
 export default function MealCard({ meal }: { meal: Meal }) {
-  const { addToCart, getItemQuantity } = useShoppingCart();
-  const [isHovered, setIsHovered] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
-  const [quantity, setQuantity] = useState(0);
+  const { addToCart } = useShoppingCart();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(meal.sizes?.[0] || null);
   const [isAdding, setIsAdding] = useState(false);
 
+  // Prevent body scroll when modal is open
   useEffect(() => {
-    setQuantity(getItemQuantity(meal._id));
-  }, [getItemQuantity, meal._id]);
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showModal]);
 
-  const handleAddToCart = async () => {
-    if (!meal.isAvailable || isAdding) return;
+  const hasSingleOption = meal.sizes?.length === 1;
+  const needsCustomization = meal.sizes && meal.sizes.length > 1;
 
+  const priceDisplay = useMemo(() => {
+    if (meal.sizes?.length) {
+      if (hasSingleOption) return `R${meal.sizes[0].price.toFixed(2)}`;
+      const minPrice = Math.min(...meal.sizes.map(s => s.price));
+      return `From R${minPrice.toFixed(2)}`;
+    }
+    return meal.price ? `R${meal.price.toFixed(2)}` : '';
+  }, [meal.sizes, meal.price, hasSingleOption]);
+
+  const handleAddToCart = async (size = selectedSize) => {
     setIsAdding(true);
     try {
       await addToCart({
-        _id: meal._id,
-        _type: meal._type || 'meal',
-        name: meal.name,
-        price: meal.price,
+        itemId: generateCartItemId(meal._id, size?._key),
+        mealId: meal._id,
+        name: size ? `${meal.name} (${size.label})` : meal.name,
+        basePrice: size?.price || meal.price || 0,
+        quantity: 1,
+        selectedExtras: [[]],
         image: meal.image,
-        extras: meal.extras || [],
-        isAvailable: meal.isAvailable,
-        ...(meal.category && { category: meal.category })
+        selectedSize: size ? {
+          label: size.label,
+          price: size.price,
+          _key: size._key
+        } : undefined
       });
+      setShowModal(false);
     } finally {
       setIsAdding(false);
     }
   };
 
-  const getCategoryTitle = () => {
-    if (!meal.category) return undefined;
-    return '_ref' in meal.category ? undefined : meal.category.title;
+  const handleQuickAdd = () => {
+    hasSingleOption ? handleAddToCart(meal.sizes[0]) : handleAddToCart();
   };
 
-  if (!meal.isAvailable) return null;
+  const getCategoryTitle = (category: any) => {
+    if (category?._ref) {
+      // If it's a reference, return the title from expanded category
+      return (category as Category).title;
+    }
+    return category?.title || '';
+  };
 
   return (
-    <article
-      className={`${styles.mealCard} ${isHovered ? styles.hovered : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div className={styles.imageContainer}>
-        {meal.image?.asset?.url ? (
-          <Image
-            src={urlFor(meal.image).width(600).height(400).url()}
-            alt={meal.name}
-            fill
-            className={`${styles.image} ${isImageLoading ? styles.loading : styles.loaded}`}
-            onLoadingComplete={() => setIsImageLoading(false)}
-            priority
-          />
-        ) : (
-          <div className={styles.imagePlaceholder}>
-            <div className={styles.spinner}></div>
-          </div>
-        )}
-        {getCategoryTitle() && (
-          <span className={styles.categoryBadge}>
-            {getCategoryTitle()}
-          </span>
-        )}
-      </div>
-
-      <div className={styles.content}>
-        <h3 className={styles.title}>{meal.name}</h3>
-        {meal.description && (
-          <p className={styles.description}>{meal.description}</p>
-        )}
-
-        {/* Extras Section */}
-        {meal.extras && meal.extras.length > 0 && (
-          <div className={styles.extrasSection}>
-            <h4 className={styles.extrasTitle}>Available Extras:</h4>
-            <ul className={styles.extrasList}>
-              {meal.extras.map(extra => (
-                <li key={extra._id} className={styles.extraItem}>
-                  {extra.name} (+R{extra.price.toFixed(2)})
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className={styles.footer}>
-          <span className={styles.price}>R{meal.price?.toFixed(2)}</span>
-          <button
-            onClick={handleAddToCart}
-            className={`${styles.addButton} ${
-              quantity > 0 ? styles.hasQuantity : ''
-            } ${isAdding ? styles.isAdding : ''}`}
-            disabled={!meal.isAvailable || isAdding}
-            aria-label={`Add ${meal.name} to cart`}
-          >
-            {quantity > 0 ? `(${quantity}) Add More` : 'Add to Cart'}
-          </button>
+    <>
+      <article className={styles.card}>
+        <div className={styles.imageContainer}>
+          {meal.image?.asset?._ref && (
+            <Image
+              src={urlFor(meal.image).width(400).url()}
+              alt={meal.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className={styles.image}
+              priority={false}
+            />
+          )}
+          {meal.category && (
+  <div className={styles.categoryBadge}>
+    {getCategoryTitle(meal.category)}
+  </div>
+)}
         </div>
-      </div>
-    </article>
+
+        <div className={styles.content}>
+          <h3 className={styles.title}>{meal.name}</h3>
+          {meal.description && (
+            <p className={styles.description}>{meal.description}</p>
+          )}
+          <div className={styles.price}>{priceDisplay}</div>
+
+          <div className={styles.actions}>
+            {needsCustomization ? (
+              <button
+                className={styles.customizeButton}
+                onClick={() => setShowModal(true)}
+              >
+                Choose Options
+              </button>
+            ) : (
+              <button
+                className={styles.addButton}
+                onClick={handleQuickAdd}
+                disabled={isAdding}
+              >
+                {isAdding ? 'Adding...' : 'Add to Cart'}
+              </button>
+            )}
+          </div>
+        </div>
+      </article>
+
+      {showModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h3>{meal.name}</h3>
+            <div className={styles.sizeOptions}>
+              {meal.sizes?.map(size => (
+                <button
+                  key={size._key}
+                  className={`${styles.sizeButton} ${
+                    selectedSize?._key === size._key ? styles.selected : ''
+                  }`}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  <span>{size.label}</span>
+                  <span>R{size.price.toFixed(2)}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              className={styles.addButton}
+              onClick={() => handleAddToCart()}
+              disabled={isAdding}
+            >
+              {isAdding ? 'Adding...' : 'Add to Cart'}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

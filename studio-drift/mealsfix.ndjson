@@ -1,0 +1,21 @@
+# First: New Choice Definitions
+{"_id":"choice-base","_type":"choice","name":"Base Selection","description":"Choose your base","isRequired":true,"maxOptions":1,"options":[{"name":"Fries","price":0},{"name":"Rice","price":0},{"name":"Pap","price":0}]}
+{"_id":"choice-omelette-toppings","_type":"choice","name":"Omelette Toppings","description":"Choose 3 toppings","isRequired":true,"maxOptions":3,"options":[{"name":"Bacon","price":0},{"name":"Mushrooms","price":0},{"name":"Roasted Tomatoes","price":0},{"name":"Onion","price":0},{"name":"Ham","price":0},{"name":"Cheese","price":5}]}
+{"_id":"choice-wing-sauce","_type":"choice","name":"Wing Sauce","description":"Choose your sauce","isRequired":true,"maxOptions":1,"options":[{"name":"Hot","price":0},{"name":"Drift","price":0},{"name":"Mild","price":0},{"name":"Plain","price":0}]}
+
+# Updated Meals with Choices
+{"_id":"meal-meat-platter","_type":"meal","name":"Meat Platter (MCWEMBE)","description":"Served with fries, rice or pap, salad, and sauces","sizes":[{"label":"2 Meats","price":110.00},{"label":"3 Meats","price":165.00},{"label":"4 Meats","price":199.00}],"image":null,"category":{"_type":"reference","_ref":"category-platters"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-base"}]}
+{"_id":"meal-omelette","_type":"meal","name":"Omelette","description":"Eggs, peppers, toast. Choose any 3 toppings: bacon, mushrooms, roasted tomatoes, onion, ham, cheese","sizes":[{"label":"Regular","price":79.99}],"image":null,"category":{"_type":"reference","_ref":"category-home-cooked-meals"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-omelette-toppings"}]}
+
+# Updated Wings Meals
+{"_id":"meal-6-wings","_type":"meal","name":"6 Wings","description":"Choose sauce: Hot, Drift, Mild, or Plain","sizes":[{"label":"6 pieces","price":60.00}],"image":null,"category":{"_type":"reference","_ref":"category-wings"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-wing-sauce"}]}
+{"_id":"meal-12-wings","_type":"meal","name":"12 Wings","description":"Choose sauce: Hot, Drift, Mild, or Plain","sizes":[{"label":"12 pieces","price":110.00}],"image":null,"category":{"_type":"reference","_ref":"category-wings"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-wing-sauce"}]}
+{"_id":"meal-24-wings","_type":"meal","name":"24 Wings","description":"Choose sauce: Hot, Drift, Mild, or Plain","sizes":[{"label":"24 pieces","price":175.00}],"image":null,"category":{"_type":"reference","_ref":"category-wings"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-wing-sauce"}]}
+{"_id":"meal-48-wings","_type":"meal","name":"48 Wings","description":"Choose sauce: Hot, Drift, Mild, or Plain","sizes":[{"label":"48 pieces","price":300.00}],"image":null,"category":{"_type":"reference","_ref":"category-wings"},"isAvailable":true,"extras":[],"choices":[{"_type":"reference","_ref":"choice-wing-sauce"}]}
+
+# Preserved Existing Meals (with extras where applicable)
+{"_id":"meal-full-english-breakfast","_type":"meal","name":"Full English Breakfast","description":"2 eggs, pork sausages or wors, bacon, baked beans, mushrooms, tomato, toast slices","sizes":[{"label":"Regular","price":79.99}],"image":null,"category":{"_type":"reference","_ref":"category-all-day-breakfast"},"isAvailable":true,"extras":[]}
+{"_id":"meal-drifters","_type":"meal","name":"Drifter’s","description":"Egg, lettuce, roasted tomato, bacon or ham","sizes":[{"label":"Regular","price":49.00}],"image":null,"category":{"_type":"reference","_ref":"category-sandwiches"},"isAvailable":true,"extras":[{"_type":"reference","_ref":"extra-both-meats"}]}
+{"_id":"meal-drift-fries","_type":"meal","name":"Drift Fries","description":"","sizes":[{"label":"Small","price":20.00},{"label":"Medium","price":30.00},{"label":"Large","price":50.00}],"image":null,"category":{"_type":"reference","_ref":"category-fries"},"isAvailable":true,"extras":[{"_type":"reference","_ref":"extra-coffee"},{"_type":"reference","_ref":"extra-tea"}]}
+
+# ... (keep all other existing meal entries exactly as they were, only the above meals were modified)

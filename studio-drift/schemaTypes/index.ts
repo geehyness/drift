@@ -9,8 +9,12 @@ import category from './category'
 import extra from './extra'
 import adminUser from './adminUser'
 import {about} from './about'
+import sizeOption from './sizeOption'
+import choice from './choice'
 
 export const schemaTypes = [
+  choice,
+  sizeOption,
   meal,
   combo,
   order,

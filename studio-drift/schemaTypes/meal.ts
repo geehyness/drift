@@ -10,7 +10,7 @@ export default defineType({
       name: 'name',
       title: 'Meal Name',
       type: 'string',
-      validation: (Rule) => Rule.required()
+      validation: (Rule: { required: () => any; }) => Rule.required()
     }),
     defineField({
       name: 'description',
@@ -18,10 +18,12 @@ export default defineType({
       type: 'text'
     }),
     defineField({
-      name: 'price',
-      title: 'Price',
-      type: 'number',
-      validation: (Rule) => Rule.required().positive()
+      name: 'sizes',
+      title: 'Size Variations',
+      type: 'array',
+      of: [{ type: 'sizeOption' }],
+      validation: (Rule: { required: () => { (): any; new(): any; min: { (arg0: number): any; new(): any } } }) => Rule.required().min(1),
+      description: 'One or more size/price pairs for this meal'
     }),
     defineField({
       name: 'image',
@@ -34,7 +36,7 @@ export default defineType({
       title: 'Category',
       type: 'reference',
       to: [{ type: 'category' }],
-      validation: (Rule) => Rule.required()
+      validation: (Rule: { required: () => any }) => Rule.required()
     }),
     defineField({
       name: 'isAvailable',
@@ -46,13 +48,28 @@ export default defineType({
       name: 'extras',
       title: 'Available Extras',
       type: 'array',
-      of: [{ 
-        type: 'reference', 
+      of: [{
+        type: 'reference',
         to: [{ type: 'extra' }],
-        options: {
-          filter: 'isAvailable == true'
-        }
+        options: { filter: 'isAvailable == true' }
       }]
+    }),
+    defineField({
+      name: 'choices',
+      title: 'Choice Groups',
+      type: 'array',
+      of: [{
+        type: 'reference',
+        to: [{ type: 'choice' }],
+        options: { filter: 'isRequired == true' }
+      }],
+      description: 'Mandatory selections for this meal'
+    }),
+    defineField({
+      name: 'notes',
+      title: 'Notes',
+      type: 'text',
+      description: 'Optional notes or comments for kitchen or display'
     })
   ]
 })

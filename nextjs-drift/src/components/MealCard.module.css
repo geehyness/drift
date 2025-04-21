@@ -1,24 +1,27 @@
-.mealCard {
+/* MealCard.module.css */
+.card {
+  background: #1e1e1e;
   border-radius: 8px;
   overflow: hidden;
-  background: #1e1e1e;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
+  color: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.mealCard.hovered {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
 .imageContainer {
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
+  height: 250px;
+  background: #2a2a2a;
+  overflow: hidden;
 }
 
 .image {
@@ -34,142 +37,284 @@
   opacity: 1;
 }
 
-.imagePlaceholder {
-  width: 100%;
-  height: 100%;
-  background: #1e1e1e;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(255, 0, 0, 1);
-  border-radius: 50%;
-  border-top-color: #333;
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.categoryBadge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
 .content {
-  padding: 16px;
+  padding: 1.5rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .title {
-  margin: 0 0 8px;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+  color: #fff;
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .description {
-  margin: 0 0 12px;
-  color: #666;
   font-size: 0.9rem;
+  color: #a0a0a0;
+  margin: 0 0 1.25rem;
+  line-height: 1.4;
   flex-grow: 1;
 }
 
-.extrasSection {
-  margin: 8px 0;
+.price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-bottom: 1.5rem;
 }
 
-.extrasTitle {
-  margin: 0 0 4px;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.extrasList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.extraItem {
-  background: #121212;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  color: #ccc;
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
   margin-top: auto;
 }
 
-.price {
-  font-weight: 900;
-  color: #ccc;
+.customizeButton, .addButton {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.customizeButton {
+  background: #4CAF50;
+  color: white;
+}
+
+.customizeButton:hover {
+  background: #45a049;
 }
 
 .addButton {
-  background: #0d6efd;
+  background: #2196F3;
   color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.addButton:hover {
-  background: #0a58ca;
 }
 
 .addButton:disabled {
-  background: #cccccc;
+  background: #616161;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.addButton.hasQuantity {
-  background: #2196F3;
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.9);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
 }
 
-.addButton.hasQuantity:hover {
-  background: #0b7dda;
-}
-
-.addButton.isAdding {
+.modalContent {
+  background: #2a2a2a;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   position: relative;
 }
 
-.addButton.isAdding::after {
-  content: '';
+.modalHeader {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modalContent h3 {
+  margin: 0 0 1.5rem;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.sizeOptions {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.sizeButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  background: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.sizeButton:hover {
+  background: #3d3d3d;
+}
+
+.sizeButton.selected {
+  border-color: #4CAF50;
+  background: #1b5e20;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .imageContainer {
+    height: 200px;
+  }
+  
+  .modalContent {
+    padding: 1.5rem;
+  }
+  
+  .sizeButton {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .modalContent h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .imageContainer {
+    height: 180px;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+  }
+  
+  .description {
+    font-size: 0.85rem;
+  }
+  
+  .price {
+    font-size: 1rem;
+  }
+  
+  .customizeButton, .addButton {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
-  height: 16px;
-  margin: -8px 0 0 -8px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Error States */
+.selectionError {
+  color: #ff4444;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+
+/* Category Filter Styles */
+.categoryFilter {
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  background: #1a1a1a;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* Responsive Dropdown for Mobile */
+.mobileCategorySelect {
+  display: none;
+  width: 100%;
+  padding: 0.8rem;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .filterButtons {
+    display: none;
+  }
+  
+  .mobileCategorySelect {
+    display: block;
+  }
+}
+
+/* Active Category Style */
+.filterButtons button.active {
+  background: #4CAF50;
+  border-color: #45a049;
+}
+
+/* Category Badge Styles */
+.categoryBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  z-index: 2;
+  backdrop-filter: blur(2px);
 }
