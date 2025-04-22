@@ -1,32 +1,31 @@
 // types/meal.ts
-import { Image } from 'sanity'; // Sanity v3 might export Image type directly
 
-export interface SanityImage extends Image {
+// Core Sanity Image Type
+export interface SanityImage {
   _type: 'image';
   asset: {
     _ref: string;
     _type: 'reference';
-    _weak?: boolean;
-    _key?: string;
-    // If fetching with URL directly
     url?: string;
   };
-  // Add other Sanity image fields like hotspot, crop if you use them
-  hotspot?: {
-    _key?: string;
-    _type: 'sanity.imageHotspot';
-    x: number;
-    y: number;
-    height: number;
-    width: number;
-  };
-  crop?: {
-    _key?: string;
-    _type: 'sanity.imageCrop';
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
+  // Keep these if you need them
+  hotspot?: any;
+  crop?: any;
+}
+
+// Category Reference (unexpanded)
+export interface CategoryReference {
+  _type: 'reference';
+  _ref: string;
+}
+
+// Expanded Category Document
+export interface Category {
+  _id: string;
+  _type: 'category';
+  title: string;
+  slug: {
+    current: string;
   };
 }
 
@@ -40,9 +39,9 @@ export interface Extra {
 }
 
 export interface ChoiceOption {
-  _key?: string; // Sanity array item key
+  _key: string;
   name: string;
-  price?: number; // Price adjustment for this option
+  price?: number;
 }
 
 export interface Choice {
@@ -52,77 +51,75 @@ export interface Choice {
   description?: string;
   isRequired: boolean;
   maxOptions: number;
-  options: Array<ChoiceOption>;
+  options: ChoiceOption[];
+}
+
+export interface MealSize {
+  _key: string;
+  label: string;
+  price: number;
 }
 
 export interface Meal {
   _id: string;
-  _type: 'meal'; // Or 'drink', etc.
+  _type: 'meal';
   name: string;
   description?: string;
-  // Define sizes OR a single price, not typically both for base price
-  sizes?: Array<{
-    _key?: string; // Sanity array item key
-    label: string;
-    price: number;
-  }>;
-  price?: number; // Used for items without sizes
-  image?: SanityImage; // Sanity image asset
-  category?: { _type: 'reference'; _ref: string } | { _type: 'category'; title: string; /* other category fields */ };
+  price?: number;
+  sizes?: MealSize[];
+  image?: {
+    _type:'image',
+    asset: {
+      _ref: string;
+      _type: 'reference';
+      url?: string;
+    }
+  };
+  category?: CategoryReference | Category;
   isAvailable: boolean;
-  extras?: Array<Extra>; // Available extras (actual Extra objects, assuming dereferenced)
-  choices?: Array<Choice>; // Available choice groups (actual Choice objects, assuming dereferferenced)
+  featured?: boolean;
+  extras?: Extra[];
+  choices?: Choice[];
   notes?: string;
 }
 
-// Structure for storing selected choices in the CartItem
+// Cart Types
 export interface SelectedChoiceGroup {
-  _ref: string; // Reference to the original Choice document ID
-  choiceName: string; // Store name for display
+  _ref: string;
+  choiceName: string;
   selectedOptions: Array<{
-    _key?: string; // Key from the original option
+    _key?: string;
     name: string;
-    price?: number; // Store price at time of adding, in case it changes later
+    price?: number;
   }>;
 }
 
-// Represents a single unique item configuration in the shopping cart
 export interface CartItem {
-  itemId: string; // Unique ID: mealId + hash(selectedSize + selectedChoices) - used for map keys, updates etc.
-  mealId: string; // The _id of the original meal document (useful for lookup if needed)
-  name: string; // Display name for the item instance (e.g., "Meat Platter (3 Meats, Fries)")
-  basePrice: number; // The price of the selected size or the single meal price at time of adding
-
-  image?: SanityImage; // Include image for display in cart
-
-  quantity: number; // How many units of *this specific configuration* are in the cart
-
-  // The configuration details that make this item unique
+  itemId: string;
+  mealId: string;
+  name: string;
+  basePrice: number;
+  image?: SanityImage;
+  quantity: number;
   selectedSize?: {
-     label: string;
-     price: number; // Price at time of adding
-     _key?: string; // Key from the original size option
+    label: string;
+    price: number;
+    _key?: string;
   };
-  selectedChoices?: Array<SelectedChoiceGroup>; // Selected choices for this item instance
-
-  // Available extras for selection IN THE CART (passed from Meal)
-  availableExtras: Array<Extra>;
-  // Selected extras per *quantity instance*. This structure supports selecting extras per individual unit.
-  selectedExtras: Array<Array<Extra>>; // Array of arrays: outer array is for each quantity (length = item.quantity), inner array is selected extras for that specific unit instance
-
-  // Other fields from Meal that might be useful for display/logic in cart (optional)
-  // category?: any; // Reference or expanded category
+  selectedChoices?: SelectedChoiceGroup[];
+  availableExtras: Extra[];
+  selectedExtras: Extra[][];
 }
 
-
-// Inside types/meal.ts or wherever ShoppingCartContextType is defined
-
-interface ShoppingCartContextType {
+// Shopping Cart Context Type
+export interface ShoppingCartContextType {
   isCartOpen: boolean;
   cartItems: CartItem[];
   openCart: () => void;
   closeCart: () => void;
-  addToCart: (item: Omit<CartItem, 'quantity' | 'selectedExtras'> & { availableExtras: Array<Extra> }) => void;
+  addToCart: (item: Omit<CartItem, 'quantity' | 'selectedExtras'> & { 
+    availableExtras: Extra[] 
+  }) => void;
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, newQuantity: number) => void;
   updateExtraSelection: (itemId: string, quantityIndex: number, extra: Extra) => void;
@@ -130,5 +127,29 @@ interface ShoppingCartContextType {
   getTotalItems: () => number;
   getCartTotal: () => number;
   getItemQuantity: (itemId: string) => number;
-  toggleCart: () => void; // <--- Added this line
+  toggleCart: () => void;
+}
+
+// Helper Types
+export interface CategoryWithCount extends Category {
+  mealCount: number;
+}
+
+// Type Guards
+export function isExpandedCategory(
+  category: CategoryReference | Category
+): category is Category {
+  return (category as Category)._id !== undefined;
+}
+
+export function isFullyExpandedMeal(meal: Meal): meal is Meal & {
+  category: Category;
+  extras: Extra[];
+  choices: Choice[];
+} {
+  return (
+    isExpandedCategory(meal.category!) &&
+    Array.isArray(meal.extras) &&
+    Array.isArray(meal.choices)
+  );
 }

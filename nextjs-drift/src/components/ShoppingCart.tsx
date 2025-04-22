@@ -176,20 +176,17 @@ export default function ShoppingCart() {
 
     // Prepare data for the backend API
     const orderData = {
-      cartItems: cartItems.map((item: { itemId: any; mealId: any; name: any; basePrice: any; quantity: any; selectedSize: any; selectedChoices: any; selectedExtras: any[][]; }) => ({
-        // Include essential CartItem fields for the order
-        itemId: item.itemId, // Unique item config ID
-        mealId: item.mealId, // Original meal ID
-        name: item.name, // Display name with config
-        basePrice: item.basePrice, // Base price of the config
-        quantity: item.quantity, // Quantity of this config
-        selectedSize: item.selectedSize, // Selected size details
-        selectedChoices: item.selectedChoices, // Selected choices details
-
-        // Include selected extras, ensuring serializable format and filtering nulls
-        selectedExtras: item.selectedExtras.map((extrasForOneQuantity: any[]) =>
+      cartItems: cartItems.map((item: CartItem) => ({
+        itemId: item.itemId,
+        mealId: item.mealId,
+        name: item.name,
+        basePrice: item.basePrice,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,  // Now properly optional
+        selectedChoices: item.selectedChoices,
+        selectedExtras: item.selectedExtras.map(extrasForOneQuantity =>
           extrasForOneQuantity
-            .filter(extra => extra !== null && extra !== undefined) // Filter out any null/undefined entries
+            .filter(extra => extra !== null)
             .map(extra => ({
               _id: extra._id,
               name: extra.name,
@@ -303,16 +300,19 @@ export default function ShoppingCart() {
                               {item.selectedSize && (
                                   <span><span className={styles.configTitle}>Size:</span> {item.selectedSize.label}</span>
                               )}
-                              {/* Map over selected choices to display chosen options */}
-                              {item.selectedChoices && item.selectedChoices.map((choiceGroup: { selectedOptions: { name: string; price: number | null | undefined; }[]; _ref: Key | null | undefined; choiceName: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | Iterable<ReactNode> | null | undefined; }) => (
-                                  choiceGroup.selectedOptions.length > 0 && (
-                                      <span key={choiceGroup._ref}> {/* Use choice group reference as key */}
-                                          <span className={styles.configTitle}>{choiceGroup.choiceName}:</span>{' '}
-                                          {/* Map over selected options within the group, display name and price if > 0 */}
-                                          {choiceGroup.selectedOptions.map((opt: { name: string; price: number | null | undefined; }) => opt.name + (opt.price !== undefined && opt.price !== null && opt.price > 0 ? ` (+R${opt.price.toFixed(2)})` : '')).join(', ')}
-                                      </span>
-                                  )
-                              ))}
+                              {/* Map over selected choices to display chosen options 
+                              // Update the selected choices rendering block to:*/}
+                              
+{item.selectedChoices?.map((choiceGroup) => (
+  choiceGroup.selectedOptions.length > 0 && (
+    <span key={choiceGroup._ref}>
+      <span className={styles.configTitle}>{choiceGroup.choiceName}:</span>{' '}
+      {choiceGroup.selectedOptions.map((opt) => 
+        opt.name + (opt.price ? ` (+R${opt.price.toFixed(2)})` : '')
+      ).join(', ')}
+    </span>
+  )
+))}
                           </div>
                       )}
 
@@ -337,7 +337,7 @@ export default function ShoppingCart() {
 
                       {/* Extras Selection Section (only if item has available extras) */}
                       {/* Check if item.availableExtras exists and has elements, filtering out any nulls */}
-                      {item.availableExtras && item.availableExtras.filter((extra: null | undefined) => extra !== null && extra !== undefined).length > 0 && (
+                      {item.availableExtras && item.availableExtras.filter(extra => extra !== null && extra !== undefined).length > 0 && (
                          <div className={styles.extrasContainer} style={{ '--item-quantity': item.quantity } as React.CSSProperties}> {/* Pass quantity as CSS variable for grid */}
                            <h4 className={styles.extrasTitle}>Extras:</h4>
                            <div className={styles.extrasGrid}>

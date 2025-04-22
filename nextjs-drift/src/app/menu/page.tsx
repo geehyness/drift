@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { client } from '@/lib/sanity';
 import styles from './page.module.css';
 import MealCard from '@/components/MealCard';
@@ -12,16 +12,31 @@ interface CategoryWithCount extends Category {
 }
 
 export default function MenuPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Loading menu...</p>
+      </div>
+    }>
+      <MenuContent />
+    </Suspense>
+  );
+}
+
+function MenuContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const currentCategorySlug = useMemo(() => searchParams.get('category'), [searchParams]);
+  const currentCategorySlug = useMemo(
+    () => searchParams?.get('category') ?? null,
+    [searchParams]
+  );
 
   const [allMeals, setAllMeals] = useState<Meal[]>([]);
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch all data once on mount
   useEffect(() => {
     async function fetchData() {
       try {
@@ -54,6 +69,7 @@ export default function MenuPage() {
                 slug { current }
               },
               image {
+                _type,
                 asset-> {
                   _id,
                   _type,
@@ -103,31 +119,32 @@ export default function MenuPage() {
     fetchData();
   }, []);
 
-  // Memoized filtered meals
   const filteredMeals = useMemo(() => {
     if (!currentCategorySlug) return allMeals;
-    return allMeals.filter(meal => 
-      meal.category?.slug?.current === currentCategorySlug
-    );
+    return allMeals.filter(meal => {
+      if (!meal.category || !('slug' in meal.category)) return false;
+      return meal.category.slug.current === currentCategorySlug;
+    });
   }, [allMeals, currentCategorySlug]);
 
-  // Category click handler remains the same
   const handleCategoryClick = useCallback((slug: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     slug ? params.set('category', slug) : params.delete('category');
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [searchParams, router]);
 
-  // Loading and error states remain the same
-  // ...
+  if (loading) return (
+    <div className={styles.loadingContainer}>
+      <div className={styles.spinner}></div>
+      <p>Loading menu...</p>
+    </div>
+  );
+
+  if (error) return <div className={styles.error}>{error}</div>;
 
   return (
     <main className={styles.menuPage}>
-      {/* Header remains the same */}
-
-      {/* Category Filter */}
       <section className={`container ${styles.categoryFilter}`}>
-        {/* Mobile dropdown */}
         <select 
           className={styles.mobileCategorySelect}
           value={currentCategorySlug || ''}
@@ -141,7 +158,6 @@ export default function MenuPage() {
           ))}
         </select>
 
-        {/* Desktop tabs */}
         <div className={styles.filterButtons}>
           <button
             onClick={() => handleCategoryClick(null)}
@@ -164,7 +180,6 @@ export default function MenuPage() {
         </div>
       </section>
 
-      {/* Menu Items */}
       <section className={`container ${styles.menuItems}`}>
         {filteredMeals.length > 0 ? (
           <div className={styles.mealsGrid}>

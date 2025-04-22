@@ -77,6 +77,7 @@ export async function getAvailableMeals(): Promise<Meal[]> {
           slug
         },
         image {
+          _type,
           asset-> {
             _id,
             url

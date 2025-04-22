@@ -5,7 +5,7 @@ import { useShoppingCart } from '@/context/ShoppingCartContext';
 import { urlFor } from '@/lib/sanity';
 import styles from './MealCard.module.css';
 import { useState, useMemo, useEffect } from 'react';
-import { Meal } from '@/types/meal';
+import { Category, Meal } from '@/types/meal';
 
 const generateCartItemId = (mealId: string, sizeKey?: string) => {
   return sizeKey ? `${mealId}_size-${sizeKey}` : mealId;
@@ -50,14 +50,15 @@ export default function MealCard({ meal }: { meal: Meal }) {
         mealId: meal._id,
         name: size ? `${meal.name} (${size.label})` : meal.name,
         basePrice: size?.price || meal.price || 0,
-        quantity: 1,
-        selectedExtras: [[]],
+        //quantity: 1,
+        //selectedExtras: [[]],
         image: meal.image,
         selectedSize: size ? {
           label: size.label,
           price: size.price,
           _key: size._key
-        } : undefined
+        } : undefined,
+        availableExtras: meal.extras || [] 
       });
       setShowModal(false);
     } finally {
@@ -66,7 +67,11 @@ export default function MealCard({ meal }: { meal: Meal }) {
   };
 
   const handleQuickAdd = () => {
-    hasSingleOption ? handleAddToCart(meal.sizes[0]) : handleAddToCart();
+    if (hasSingleOption && meal.sizes) {
+      handleAddToCart(meal.sizes[0]);
+    } else {
+      handleAddToCart();
+    }
   };
 
   const getCategoryTitle = (category: any) => {
@@ -91,11 +96,12 @@ export default function MealCard({ meal }: { meal: Meal }) {
               priority={false}
             />
           )}
-          {meal.category && (
-  <div className={styles.categoryBadge}>
-    {getCategoryTitle(meal.category)}
-  </div>
-)}
+          {meal.category ? (
+            <div className={styles.categoryBadge}>
+              {getCategoryTitle(meal.category)}
+            </div>
+          ) : null}
+
         </div>
 
         <div className={styles.content}>

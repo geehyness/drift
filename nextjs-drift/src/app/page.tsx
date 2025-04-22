@@ -36,6 +36,7 @@ export default function HomePage() {
             slug { current }
           },
           image {
+            _type,
             asset-> {
               _id,
               _type,

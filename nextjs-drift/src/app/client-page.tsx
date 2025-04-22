@@ -22,6 +22,7 @@ export interface Meal {
   description?: string;
   price: number;
   image?: {
+    _type: 'image'
     asset: {
       _ref: string;
       _type: 'reference';
@@ -32,7 +33,7 @@ export interface Meal {
     _ref: string;
     _type: 'reference';
   } | Category;
-  isAvailable?: boolean;
+  isAvailable: boolean;
 }
 
 export default function ClientPage() {
@@ -51,6 +52,7 @@ export default function ClientPage() {
           price,
           isAvailable,
           image { 
+            _type,
             asset-> { 
               _id, 
               url 
