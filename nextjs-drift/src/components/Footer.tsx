@@ -36,9 +36,9 @@ export default function Footer() {
 
           <div className={styles.footerSection}>
             <h3 className={styles.footerHeading}>Where To Find Us</h3>
-            <p>Zakhele</p>
-            <p>Manzini, M200</p>
-            <p>Phone: (+268) 7959 1427</p>
+            <p>Checkers</p>
+            <p>Mbabane, Eswatini</p>
+            <p>Phone: (+268) 7990 0888</p>
           </div>
         </div>
 
